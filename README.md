@@ -15,7 +15,12 @@ Neste projeto iremos desenvolver um sistemas para usuários de uma academia, con
 * Jardell Fillipe da Silva           
 
 ## Objetivos
+O NexusFit é um sistema orientado a objetos desenvolvido para automatizar e centralizar a gestão operacional de uma academia. Ele gerencia o ciclo de vida do aluno desde o seu cadastro e escolha de planos específicos até o controle de pagamentos, status de matrícula, emissão de fichas de treino e monitoramento de pendências operacionais.
 
+O sistema atende a dois perfis principais de usuários através de um módulo de autenticação unificado:
+
+👤 Alunos (Clientes): Podem realizar login, consultar pagamentos, verificar o status da matrícula, solicitar cancelamento de contrato, alterar de plano e visualizar sua ficha de treino.
+👨💼 Administradores / Funcionários: Realizam o controle de matrículas, cadastros de alunos (contendo nome, e-mail, CPF, senha e número de matrícula), consulta de dados e pendências (verificando se o status está ativo ou inativo), cobranças de pagamentos, cancelamento de matrículas e elaboração/atualização das fichas de treino.
 
 ## Instruções de utilização.
 
