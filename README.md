@@ -20,6 +20,7 @@ O NexusFit é um sistema orientado a objetos desenvolvido para automatizar e cen
 O sistema atende a dois perfis principais de usuários através de um módulo de autenticação unificado:
 
 👤 Alunos (Clientes): Podem realizar login, consultar pagamentos, verificar o status da matrícula, solicitar cancelamento de contrato, alterar de plano e visualizar sua ficha de treino.
+
 👨💼 Administradores / Funcionários: Realizam o controle de matrículas, cadastros de alunos (contendo nome, e-mail, CPF, senha e número de matrícula), consulta de dados e pendências (verificando se o status está ativo ou inativo), cobranças de pagamentos, cancelamento de matrículas e elaboração/atualização das fichas de treino.
 
 ## Instruções de utilização.
