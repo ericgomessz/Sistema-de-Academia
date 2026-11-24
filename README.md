@@ -14,16 +14,13 @@ Neste projeto iremos desenvolver um sistemas para usuários de uma academia, con
      
 * Jardell Fillipe da Silva           
 
-## Instruções de utilização.
-
-# Documentação
+## Documentação
 
 <ol>
 <li><a href="Documentação.md"> Documentação de contexto</a></li>
 <li><a href="Modelagem.md"> Modelagem dos processos de negócios</a></li>
 <li><a href="Prototipo.md"> Projeto de interface</a></li>
 <li><a href="Comportamento.md"> Comportamento</a></li>
+<li><a href="Program.cs">Código</a></li>
 
-# Código
-
-<a href="Program.cs">Código</a>
+## Instruções de utilização.
