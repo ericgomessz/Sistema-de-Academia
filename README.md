@@ -40,4 +40,12 @@ Neste projeto iremos desenvolver um sistemas para usuários de uma academia, con
 
    dotnet run
 
-   🔐 Contas de Teste (Dados Iniciais)O sistema já inicia com três perfis pré-cadastrados para facilitar os testes e a apresentação:PerfilE-mailSenhaPermissões no PainelAdministrador (Funcionário)admin@nexusfit.comadmin123Cadastrar membros, consultar dados e pendências (ativo/inativo), efetuar cobranças e cancelar matrículas.Instrutorinstrutor@nexusfit.comtreino123Todas as funções de funcionário + montar treinos e registrar avaliações físicas.Membro (Aluno)lucas@email.comaluno123Contratar/renovar/alterar plano, solicitar trancamento, consultar pagamentos, ver treinos e acompanhar evolução física.
+ ## 🔑 Contas de Teste (Dados Iniciais)
+
+O sistema inicia com três perfis pré-cadastrados para facilitar os testes e a apresentação:
+
+| Perfil | E-mail | Senha | Permissões no Painel |
+| :--- | :--- | :--- | :--- |
+| **Administrador (Funcionário)** | `admin@nexusfit.com` | `admin123` | Cadastrar membros, consultar dados e pendências (`ATIVO`/`INATIVO`), efetuar cobranças e cancelar matrículas. |
+| **Instrutor** | `instrutor@nexusfit.com` | `treino123` | Todas as funções de funcionário + montar treinos e registrar avaliações físicas. |
+| **Membro (Aluno)** | `lucas@email.com` | `aluno123` | Contratar/renovar/alterar plano, solicitar trancamento, consultar pagamentos, ver treinos e acompanhar evolução física. |
