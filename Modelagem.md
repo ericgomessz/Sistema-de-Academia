@@ -1,123 +1,160 @@
+# Modelagem do Sistema (UML)
 
-# Modelagem do Sistema - NexusFit
+Estrutura estática do NexusFit sob a ótica da Orientação a Objetos, com um módulo de autenticação unificado para **Membros** e **Funcionários/Instrutores**.
 
-Esta seção apresenta a estrutura estática do sistema **NexusFit** sob a ótica da Orientação a Objetos. O desenho foi concebido para suportar dois perfis distintos de acesso através de um módulo de autenticação unificado: **Clientes (Alunos)** e **Administradores (Funcionários)**. 
-
-Abaixo encontra-se o diagrama de classes em UML, seguido da listagem detalhada das responsabilidades de cada entidade e da explicação dos seus relacionamentos.
-
----
-
-## 1. Diagrama de Classes (UML)
+## 1. Diagrama de Classes
 
 ```mermaid
 classDiagram
     class Usuario {
         <<abstract>>
-        #string Nome
-        #string Email
-        #string Cpf
-        #string Senha
-        +RealizarLogin(string email, string senha) bool
-        +RealizarLogout()
+        +string Nome
+        +string Email
+        -string Cpf
+        -string SenhaHash
+        +Autenticar(senha) bool
     }
-    
-    class Aluno {
-        -string Matricula
-        -string StatusMatricula
+    class Membro {
+        +string Matricula
+        +StatusMatricula Status
+        +DateTime DataAdesao
+        +ContratarPlano(plano)
+        +RenovarPlano()
+        +AlterarPlano(plano)
+        +SolicitarTrancamento()
+        +CancelarPlano()
         +ConsultarPagamentos()
-        +CancelarMatricula()
-        +MudarPlano(Plano novoPlano)
-        +VerFicha()
+        +ConsultarEvolucao()
     }
-    
     class Funcionario {
-        -string Cargo
-        -double Salario
-        -string NivelPermissao
-        +ConsultarPendencias(Aluno aluno)
-        +CobrarPagamento(Aluno aluno)
-        +ConsultarDadosAluno(Aluno aluno)
-        +CancelarMatricula(Aluno aluno)
-        +FazerFichaAluno(Aluno aluno)
+        +ConsultarPendencias()
+        +EfetuarCobranca(membro)
+        +CancelarMatricula(membro)
     }
-    
+    class Instrutor {
+        +MontarTreino(membro)
+        +RegistrarAvaliacao(membro)
+    }
     class Plano {
         <<abstract>>
-        #string NomePlano
-        #int DiasSemanaPermitidos
-        #bool PermiteBike
-        #bool PermiteBox
+        +Categoria Categoria
+        +CalcularMensalidade(mesesFidelidade)* decimal
+        +PermiteTrancamento()* bool
     }
-
-    class PlanoDiamante {
-        -int ConvitesAmigosMes = 3
+    class PlanoMensal
+    class PlanoTrimestral
+    class PlanoAnual
+    class Categoria {
+        <<enumeration>>
+        Prata
+        Ouro
+        Diamante
     }
-
-    class PlanoOuro {
+    class Exercicio {
+        <<abstract>>
+        +string Nome
+        +Descrever()* string
     }
-
-    class PlanoPrata {
-        -int AulasEscolhaMes = 1
+    class Aerobico {
+        +int DuracaoMinutos
+        +string Intensidade
     }
-    
+    class Musculacao {
+        +int Series
+        +int Repeticoes
+        +decimal Carga
+    }
+    class Treino {
+        +string Nome
+        +DateTime DataCriacao
+        +AdicionarExercicio(exercicio)
+    }
+    class AvaliacaoFisica {
+        +DateTime Data
+        +decimal Peso
+        +Medidas Medidas
+    }
     class Pagamento {
-        -int IdPagamento
-        -string StatusAtivoOuInativo
-        +VerificarStatus()
-        +EfetuarCobranca()
+        +decimal Valor
+        +DateTime Vencimento
+        +bool Pago
     }
 
-    class FichaTreino {
-        -string DetalhesExercicios
-        -DateTime DataCriacao
-        +AtualizarFicha()
-    }
-
-    Usuario <|-- Aluno
+    Usuario <|-- Membro
     Usuario <|-- Funcionario
-    Plano <|-- PlanoDiamante
-    Plano <|-- PlanoOuro
-    Plano <|-- PlanoPrata
-    Aluno "1" --> "1" Plano : possui contrato
-    Aluno "1" --> "*" Pagamento : possui histórico
-    Aluno "1" --> "1" FichaTreino : possui
-
+    Funcionario <|-- Instrutor
+    Plano <|-- PlanoMensal
+    Plano <|-- PlanoTrimestral
+    Plano <|-- PlanoAnual
+    Exercicio <|-- Aerobico
+    Exercicio <|-- Musculacao
+    Plano --> Categoria
+    Membro "1" --> "0..1" Plano : plano ativo
+    Membro "1" --> "*" Pagamento
+    Membro "1" --> "*" Treino
+    Membro "1" --> "*" AvaliacaoFisica
+    Instrutor "1" --> "*" Treino : monta
+    Instrutor "1" --> "*" AvaliacaoFisica : registra
+    Treino "1" *-- "*" Exercicio
 ```
 
-## 2.2. Classes e Suas Responsabilidades
+## 2. Classes e Responsabilidades
 
-Usuario (Classe Abstrata Base):
+| Classe | Tipo | Responsabilidade |
+|---|---|---|
+| **Usuario** | Abstrata | Atributos de autenticação (Nome, Email, Cpf, Senha) e o método comum de login. |
+| **Membro** | Herda de Usuario | Aluno da academia. Possui matrícula, status e data de adesão. Contrata, renova, altera, tranca e cancela plano; consulta pagamentos, treinos e evolução. |
+| **Funcionario** | Herda de Usuario | Equipe de gestão. Consulta pendências, efetua cobranças e cancela matrículas. |
+| **Instrutor** | Herda de Funcionario | Monta treinos e registra avaliações físicas. |
+| **Plano** | Abstrata | Base dos planos. Define `CalcularMensalidade()` e `PermiteTrancamento()` e carrega a `Categoria` de benefícios. |
+| **PlanoMensal / PlanoTrimestral / PlanoAnual** | Concretas | Implementam as regras de mensalidade e trancamento de cada duração. |
+| **Categoria** | Enum | Prata, Ouro e Diamante, com suas regras de acesso e benefícios. |
+| **Exercicio** | Abstrata | Base dos exercícios. Define `Descrever()`. |
+| **Aerobico / Musculacao** | Concretas | Exercícios aeróbicos (duração, intensidade) e de musculação (séries, repetições, carga). |
+| **Treino** | Concreta | Conjunto de exercícios montado por um instrutor para um membro. |
+| **AvaliacaoFisica** | Concreta | Registro de data, peso e medidas; base da consulta de evolução. |
+| **Pagamento** | Concreta | Situação financeira da mensalidade (valor, vencimento, pago/pendente). |
 
-Papel: Concentra os atributos genéricos de autenticação (Nome, Email, Cpf, Senha) e o método comum de login para validar o acesso no sistema.
+## 3. Relacionamentos
 
-Aluno (Perfil Cliente - Herda de Usuario):
+- **Herança:** `Membro` e `Funcionario` herdam de `Usuario`; `Instrutor` herda de `Funcionario`; `PlanoMensal`, `PlanoTrimestral` e `PlanoAnual` herdam de `Plano`; `Aerobico` e `Musculacao` herdam de `Exercicio`.
+- **Associação:** o `Membro` possui **no máximo um** `Plano` ativo, um histórico de `Pagamento`, vários `Treino` e várias `AvaliacaoFisica`.
+- **Composição:** o `Treino` é composto por uma lista de `Exercicio`.
+- **Autoria:** o `Instrutor` monta os `Treino` e registra as `AvaliacaoFisica`.
 
-Papel: Representa o aluno da academia. Possui atributos de identificação como Matricula e StatusMatricula. Suas funcionalidades incluem escolher/mudar de plano, consultar pagamentos, verificar o status da matrícula, cancelar o plano e visualizar a ficha de treino.
+## 4. Pilares de POO no Projeto
 
-Funcionario (Perfil Administrador - Herda de Usuario):
+| Pilar | Onde aparece |
+|---|---|
+| **Abstração** | Classes abstratas `Usuario`, `Plano` e `Exercicio`. |
+| **Encapsulamento** | CPF, senha e status são privados e acessados por propriedades/métodos com validação. |
+| **Herança** | Hierarquias `Usuario`, `Plano` e `Exercicio`. |
+| **Polimorfismo** | `CalcularMensalidade()` e `PermiteTrancamento()` em cada plano; `Descrever()` em cada exercício. |
 
-Papel: Representa a equipe gestora. Suas funcionalidades englobam consultar pendências (verificando se o status está ativo ou inativo), efetuar cobranças, consultar os dados cadastrais completos dos alunos (nome, e-mail, CPF, senha e matrícula), cancelar matrículas e criar ou atualizar a ficha de treino do aluno.
+# Requisitos do Sistema
 
-Plano (Hierarquia de Planos):
+## Requisitos Funcionais (RF)
 
-Papel: Classe base abstrata para os pacotes de treino. Suas especializações definem as regras específicas de cada categoria:
+| Código | Requisito | Descrição |
+|---|---|---|
+| RF01 | Cadastro de usuários e perfis | Cadastrar **membros e instrutores/funcionários**, coletando nome, e-mail, CPF, senha e (para membros) número de matrícula. |
+| RF02 | Autenticação por perfil | Validar credenciais (e-mail/CPF e senha) e direcionar o usuário ao painel correspondente (Membro ou Funcionário/Instrutor). |
+| RF03 | Gestão de planos | Gerenciar planos **Mensal, Trimestral e Anual**, cada um com seu cálculo de mensalidade e regra de trancamento, combinados às categorias Prata, Ouro e Diamante. |
+| RF04 | Contratação e renovação de plano | O membro escolhe o plano na adesão e pode **renová-lo**, alterá-lo, trancá-lo (se permitido) ou cancelá-lo. Respeita a regra de um plano ativo por vez. |
+| RF05 | Painel e operações do funcionário | Consultar dados cadastrais dos membros, verificar pendências (ativo/inativo), efetuar cobranças e cancelar matrículas. |
+| RF06 | Consulta de pagamentos e status | O membro consulta seu histórico de pagamentos e o estado atual da matrícula. |
+| RF07 | Montagem de treinos | O **instrutor** monta e atualiza treinos compostos por exercícios, disponíveis para visualização pelo membro. |
+| RF08 | Exercícios | Suporte a exercícios **aeróbicos** (duração, intensidade) e de **musculação** (séries, repetições, carga). |
+| RF09 | Avaliação física | O instrutor registra avaliações físicas com **data, peso e medidas**. |
+| RF10 | Consulta da evolução | O membro (e o instrutor) consulta a evolução física comparando as avaliações ao longo do tempo. |
 
-PlanoDiamante: Acesso 7 dias por semana, aulas de bicicleta, aulas de box e direito a levar 3 amigos por mês.
+## Requisitos Não Funcionais (RNF)
 
-PlanoOuro: Acesso 7 dias por semana, aulas de bicicleta e aulas de box.
-
-PlanoPrata (Básico): Acesso 5 dias por semana e direito a 1 aula por mês de livre escolha.
-
-Pagamento:
-
-Papel: Controla a situação financeira da mensalidade, permitindo verificar se o status está ativo ou inativo e disparar cobranças. 
-
-FichaTreino:
-
-Papel: Armazena os dados dos exercícios recepcionados e montados pelo funcionário para acompanhamento do aluno.
-
-## 2.3. Relacionamentos entre as Classes
-
-Herança: As classes Aluno e Funcionario herdam de Usuario. Da mesma forma, os tipos de planos (PlanoDiamante, PlanoOuro, PlanoPrata) herdam de Plano.
-
-Associação: O Aluno possui um Plano ativo, um histórico de Pagamento e uma FichaTreino associada, enquanto o Funcionario interage diretamente gerindo os dados e pendências do aluno.
+| Código | Requisito | Descrição |
+|---|---|---|
+| RNF01 | Aplicação de POO | Código estruturado nos quatro pilares: **Abstração, Encapsulamento, Herança e Polimorfismo**. |
+| RNF02 | Linguagem e plataforma | Desenvolvido em **C#** no ecossistema **.NET**, com tipagem estática e segurança de compilação. |
+| RNF03 | Encapsulamento de dados | Atributos sensíveis (senha, CPF, status financeiro/de matrícula) são `private`/`protected`, acessados apenas por propriedades ou métodos validadores. A **senha nunca é exibida** (nem a funcionários) e deve ser armazenada como **hash**. |
+| RNF04 | Tratamento de erros | Exceções e entradas inválidas (campos vazios, dados incorretos, falha de autenticação) são tratadas sem interromper abruptamente a execução. |
+| RNF05 | Padrões de código | Boas práticas de Clean Code: nomes descritivos, organização modular por arquivos e namespaces. |
+| RNF06 | Versionamento | Todo o desenvolvimento versionado no GitHub, com histórico de commits e documentação atualizada. |
