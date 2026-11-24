@@ -34,7 +34,7 @@ Neste projeto iremos desenvolver um sistemas para usuários de uma academia, con
 ### Passo a passo no terminal
 
 1. **Clone o repositório:**
-   ```bash
+
    git clone [https://github.com/ogomesz/Sistema-de-Academia.git](https://github.com/ogomesz/Sistema-de-Academia.git)
    cd Sistema-de-Academia
 
